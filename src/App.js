@@ -2,28 +2,43 @@ import React from 'react';
 import './App.css';
 
 class Square extends React.Component {
-
-  /* this constructor initializes class state, this state will recall that a box was clicked */
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: null,
-    };
-  }
- /* when clicking over a box an 'X' will be displayed */
+ /* Square component becomes a CONTROLLED component. Board Component holds complete control over Square */
+ /* we remove constructor, because the state is declared in Board component */
+ /* render function receives props 'onClick' and 'value' from Board component */
   render() {
     return (
-      <button className="square" 
-      onClick={() => this.setState({value: 'X'})}>
-        {this.state.value}
+      <button 
+        className="square" 
+        onClick={() => this.props.onClick()}
+      >
+        {this.props.value}
       </button>
     );
   }
 }
 
 class Board extends React.Component {
+  /* we will elevate the state of components - from Square to Board component */
+  constructor(props) {
+    super(props);
+    this.state = {
+      squares: Array(9).fill(null),
+    };
+  }
+  /* we add handleClick method --> an event handler. We use .slice() to create a copy of an array --> immutability */
+  handleClick(i) {
+    const squares = this.state.squares.slice();
+    squares[i] = 'X';
+    this.setState({squares: squares});
+  }
+
   renderSquare(i) {
-    return <Square value={i} />;
+    return (
+      <Square 
+        value={this.state.squares[i]}
+        onClick={() => this.handleClick(i)}
+      />
+    );
   }
 
   render() {
