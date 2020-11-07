@@ -2,10 +2,20 @@ import React from 'react';
 import './App.css';
 
 class Square extends React.Component {
+
+  /* this constructor initializes class state, this state will recall that a box was clicked */
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: null,
+    };
+  }
+ /* when clicking over a box an 'X' will be displayed */
   render() {
     return (
-      <button className="square">
-        {this.props.value}
+      <button className="square" 
+      onClick={() => this.setState({value: 'X'})}>
+        {this.state.value}
       </button>
     );
   }
