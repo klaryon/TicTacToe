@@ -1,20 +1,15 @@
 import React from 'react';
 import './App.css';
 
-class Square extends React.Component {
- /* Square component becomes a CONTROLLED component. Board Component holds complete control over Square */
- /* we remove constructor, because the state is declared in Board component */
- /* render function receives props 'onClick' and 'value' from Board component */
-  render() {
+function Square (props) {
+ /* we turn a class into a function ---> function components */
+ /* it's a simple way to write components that only have render() as a method. It involves less code. */
+ 
     return (
-      <button 
-        className="square" 
-        onClick={() => this.props.onClick()}
-      >
-        {this.props.value}
+      <button className="square" onClick={props.onClick}>
+        {props.value}
       </button>
     );
-  }
 }
 
 class Board extends React.Component {
@@ -27,8 +22,8 @@ class Board extends React.Component {
   }
   /* we add handleClick method --> an event handler. We use .slice() to create a copy of an array --> immutability */
   handleClick(i) {
-    const squares = this.state.squares.slice();
-    squares[i] = 'X';
+    const squares = this.state.squares.slice(); /* creates an array copy */ 
+    squares[i] = 'X'; 
     this.setState({squares: squares});
   }
 
