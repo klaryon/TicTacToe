@@ -23,8 +23,11 @@ class Board extends React.Component {
   }
   /* we add handleClick method --> an event handler. We use .slice() to create a copy of an array --> immutability */
   handleClick(i) {
-    const squares = this.state.squares.slice(); /* creates an array copy */ 
-    squares[i] = this.state.xIsNext ? 'X' : 'O'; 
+    const squares = this.state.squares.slice(); /* creates a copy of the array */ 
+    if (calculateWinner(squares) || squares[i]) { /* ignore click if someone has won or if a square is selected */ 
+      return; /* this standalone return, ignores clicks */
+    }
+    squares[i] = this.state.xIsNext ? 'X' : 'O';
     this.setState({
         squares: squares,
         xIsNext: !this.state.xIsNext,
@@ -41,7 +44,13 @@ class Board extends React.Component {
   }
 
   render() {
-    const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    const winner = calculateWinner(this.state.squares); /* check if there is a winner */
+    let status;
+    if (winner) {
+      status = 'Winner: ' + winner;
+    } else {
+      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    }
 
     return (
       <div>
@@ -80,6 +89,26 @@ class Game extends React.Component {
       </div>
     );
   }
+}
+
+function calculateWinner(squares) {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
 }
 
 
