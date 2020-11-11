@@ -52,13 +52,14 @@ class Game extends React.Component {
       history: [{ /* we will have a history array were will save every move*/
         squares: Array(9).fill(null),
       }],
+      stepNumber: 0,
       xIsNext: true,
     };
   }
 
   /* we add handleClick method --> an event handler. We use .slice() to create a copy of an array --> immutability */
   handleClick(i) {
-    const history = this.state.history;
+    const history = this.state.history.slice(0, this.state.stepNumber + 1); /* this ensures that if we go back in time, an then we do a new movement from that point, we throw all future history out, that now would be inaccurate */
     const current = history[history.length - 1];
     const squares = current.squares.slice(); /* creates a copy of the array */ 
     if (calculateWinner(squares) || squares[i]) { /* ignore click if someone has won or if a square is selected */ 
@@ -66,16 +67,24 @@ class Game extends React.Component {
     }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
     this.setState({
-      history: history.concat([{ /* .concat sustituye al .push() de los arrays, pero a diferencia que no muta el array original */
+      history: history.concat([{ /* .concat is a substitute of .push() for arrays, the main difference why we choose it is that it doesn't mute the original array */
         squares: squares,
       }]),
+      stepNumber: history.length, /* after each movement we update this variable, it avoids showing the same movement after a new one */
       xIsNext: !this.state.xIsNext,
+    });
+  }
+
+  jumpTo(step) { /* updates stepNumber and if xIsNext is true, means the number we're changing is even */ 
+    this.setState({
+      stepNumber: step,
+      xIsNext: (step % 2) === 0,
     });
   }
 
   render() {
     const history = this.state.history;
-    const current = history[history.length - 1];
+    const current = history[this.state.stepNumber]; /* renders last selected movement according to stepNumber */
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
