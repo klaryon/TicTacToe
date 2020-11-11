@@ -5,7 +5,7 @@ function Square (props) {
  /* we turn a class into a function ---> function components */
  /* it's a simple way to write components that only have render() as a method. It involves less code. */
  
-    return (
+    return ( /* we remove render() function, because Square became a function. It will only have a return. */
       <button className="square" onClick={props.onClick}>
         {props.value}
       </button>
@@ -17,14 +17,18 @@ class Board extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      squares: Array(9).fill(null),
+      squares: Array(9).fill(null), /* we have an empty array to fill */
+      xIsNext: true, /* 'X' as default */
     };
   }
   /* we add handleClick method --> an event handler. We use .slice() to create a copy of an array --> immutability */
   handleClick(i) {
     const squares = this.state.squares.slice(); /* creates an array copy */ 
-    squares[i] = 'X'; 
-    this.setState({squares: squares});
+    squares[i] = this.state.xIsNext ? 'X' : 'O'; 
+    this.setState({
+        squares: squares,
+        xIsNext: !this.state.xIsNext,
+    });
   }
 
   renderSquare(i) {
@@ -37,7 +41,7 @@ class Board extends React.Component {
   }
 
   render() {
-    const status = 'Next player: X';
+    const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
 
     return (
       <div>
